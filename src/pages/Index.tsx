@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -9,6 +10,7 @@ import Icon from '@/components/ui/icon';
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState('home');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [calculatorData, setCalculatorData] = useState({
     productType: '',
     length: '',
@@ -19,9 +21,12 @@ const Index = () => {
 
   const scrollToSection = (sectionId: string) => {
     setActiveSection(sectionId);
+    setMobileMenuOpen(false);
     const element = document.getElementById(sectionId);
     element?.scrollIntoView({ behavior: 'smooth' });
   };
+
+  const menuItems = ['Главная', 'Продукция', 'Калькулятор', 'О компании', 'Портфолио', 'Доставка', 'Контакты'];
 
   const products = [
     {
@@ -98,7 +103,7 @@ const Index = () => {
               <span className="text-xl font-bold">МеталлПром</span>
             </div>
             <div className="hidden md:flex items-center gap-6">
-              {['Главная', 'Продукция', 'Калькулятор', 'О компании', 'Портфолио', 'Доставка', 'Контакты'].map((item) => (
+              {menuItems.map((item) => (
                 <button
                   key={item}
                   onClick={() => scrollToSection(item.toLowerCase().replace(' ', '-'))}
@@ -108,10 +113,40 @@ const Index = () => {
                 </button>
               ))}
             </div>
-            <Button className="bg-accent hover:bg-accent/90">
-              <Icon name="Phone" size={16} className="mr-2" />
-              Заказать звонок
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button className="hidden sm:flex bg-accent hover:bg-accent/90">
+                <Icon name="Phone" size={16} className="mr-2" />
+                Заказать звонок
+              </Button>
+              <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" size="icon" className="md:hidden">
+                    <Icon name="Menu" size={24} />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-[280px]">
+                  <div className="flex flex-col gap-6 mt-8">
+                    <div className="flex items-center gap-2 mb-4">
+                      <Icon name="Factory" size={28} className="text-accent" />
+                      <span className="text-lg font-bold">МеталлПром</span>
+                    </div>
+                    {menuItems.map((item) => (
+                      <button
+                        key={item}
+                        onClick={() => scrollToSection(item.toLowerCase().replace(' ', '-'))}
+                        className="text-left text-lg font-medium hover:text-accent transition-colors py-2"
+                      >
+                        {item}
+                      </button>
+                    ))}
+                    <Button className="bg-accent hover:bg-accent/90 mt-4">
+                      <Icon name="Phone" size={16} className="mr-2" />
+                      Заказать звонок
+                    </Button>
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
           </nav>
         </div>
       </header>
